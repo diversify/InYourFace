@@ -45,7 +45,8 @@ public class NetworkGetUsers extends AsyncTask<String, Void, ArrayList<Friend>> 
                 JSONObject c = users.getJSONObject(i);
                 String user = c.getString("username");
                 Log.d("USER", user);
-                friends.add(new Friend(user));
+                if(!user.equals(Data.userName))
+                    friends.add(new Friend(user));
             }
 
 

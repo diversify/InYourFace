@@ -20,11 +20,9 @@ import java.util.ArrayList;
 public class MainActivity extends Activity implements View.OnClickListener {
 
     final static String TAG = "MAIN ACTIVITY";
-    Button buttonLogin, buttonCreate;
+    Button buttonLogin;
     EditText textField;
-    IntentFilter filter = new IntentFilter("filter");
     boolean dataInitialized = false;
-    String userName = "carl";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,15 +35,9 @@ public class MainActivity extends Activity implements View.OnClickListener {
         }
 
         buttonLogin = (Button) findViewById(R.id.buttonLogin);
-        buttonCreate = (Button) findViewById(R.id.buttonCreate);
-
         textField = (EditText) findViewById(R.id.editText);
 
         buttonLogin.setOnClickListener(this);
-        buttonCreate.setOnClickListener(this);
-
-        filter.addAction("filter_id");
-        registerReceiver(receiver, filter);
         startService(new Intent(this, MyService.class));
 
     }
@@ -53,7 +45,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
     public void onDestroy(){
         super.onDestroy();
         stopService(new Intent(this, MyService.class));
-        unregisterReceiver(receiver);
     }
 
     @Override
@@ -85,63 +76,16 @@ public class MainActivity extends Activity implements View.OnClickListener {
             case R.id.buttonLogin:
                 login();
                 break;
-            case R.id.buttonCreate:
-                createUser();
-                break;
         }
     }
 
     void login(){
-        userName = textField.getText().toString();
-        new NetworkLogin().execute(userName);
+        String name = textField.getText().toString();
+        new NetworkCreate().execute(name);
+        Data.userName = name;
+        new NetworkLogin().execute(Data.userName);
         Intent friends = new Intent(this, FriendsActivity.class);
         startActivity(friends);
     }
 
-    void sendSong(){
-        new NetworkSend().execute(Data.trackId, userName, "carl");
-    }
-
-    void createUser(){
-        new NetworkCreate().execute(textField.getText().toString());
-    }
-
-    private final MyBroadcastReceiver receiver = new MyBroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            if(action.equals("filter")){
-                final int id = intent.getIntExtra("id", 0);
-                if(id == Integer.parseInt(Data.receivedId)){
-                    return;
-                }
-                AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
-                alertDialog.setTitle("SONG IN YOUR FACE!");
-                alertDialog.setMessage("Do you want to share a magical moment with "+Data.receivedFrom+"?");
-                alertDialog.setButton("YES!",new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        try {
-                            new NetworkConfirm().execute(Integer.toString(id)).get();
-                            String uri = Data.receivedTrackId;
-                            Intent launcher = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
-                            startActivity(launcher);
-                        }catch (Exception e) {
-                            ;
-                        }
-                    }
-                });
-                alertDialog.setButton2("NO.", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        try {
-                            new NetworkDeny().execute(Integer.toString(id)).get();
-                        }catch (Exception e) {
-                            ;
-                        }
-                    }
-                });
-                alertDialog.show();
-                Data.receivedId = Integer.toString(id);
-            }
-        }
-    };
 }

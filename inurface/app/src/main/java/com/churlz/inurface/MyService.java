@@ -1,12 +1,9 @@
 package com.churlz.inurface;
 
-import android.app.AlertDialog;
 import android.app.Service;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.net.Uri;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
@@ -72,7 +69,10 @@ public class MyService extends Service {
                 String result = new NetworkPing().execute("YUP").get();
                 if(result.isEmpty()){
                     ;
-                }else{
+                }else if(result.equals("confirmed")){
+                    
+                }
+                else{
                     sendBroadcastMessage("filter", Integer.parseInt(result), "id");
                 }
             }catch (Exception e ){

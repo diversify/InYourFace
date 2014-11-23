@@ -19,6 +19,9 @@ public class Data {
     public static boolean playing;
     public static int positionInMs;
 
+    public static String userName = "carl";
+    public static String sendingTo;
+
     public static String receivedTrackId;
     public static String receivedFrom;
     public static String receivedId;
@@ -37,9 +40,5 @@ public class Data {
         positionInMs = 0;
 
         receivedId = "0";
-    }
-
-    public static void addUser(String name){
-        friends.add(new Friend(name));
     }
 }
