@@ -40,7 +40,6 @@ public class FriendsActivity extends Activity {
         context = this;
         adapter = new FriendsAdapter(this, Data.friends);
         listView = (ListView)findViewById(R.id.listView);
-        updateList();
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -51,6 +50,7 @@ public class FriendsActivity extends Activity {
                 startActivity(face);
             }
         });
+        updateList();
     }
 
     @Override
@@ -71,6 +71,11 @@ public class FriendsActivity extends Activity {
                 final int id = intent.getIntExtra("id", 0);
                 if(id == Integer.parseInt(Data.receivedId)){
                     return;
+                }
+                if(id == Integer.parseInt(Data.dbId)){
+                    String uri = Data.trackId;
+                    Intent launcher = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+                    startActivity(launcher);
                 }
 
                 AlertDialog alertDialog = new AlertDialog.Builder(FriendsActivity.this).create();

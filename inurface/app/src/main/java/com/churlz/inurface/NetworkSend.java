@@ -13,6 +13,8 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -44,16 +46,21 @@ public class NetworkSend extends AsyncTask<String, Void, Void> {
             HttpResponse response = httpclient.execute(httppost);
             in = new BufferedReader(new InputStreamReader(
                     response.getEntity().getContent()));
-
-            // NEW CODE
             String line;
+            String json = "";
             while ((line = in.readLine()) != null){
-                Log.d("HTTP_SEND", line);
+                json += line;
+                Log.d("SEND", line);
             }
+            JSONObject jsonObject = new JSONObject(json);
+            String id = jsonObject.getString("id");
+            Data.dbId = id;
         } catch (ClientProtocolException e) {
             // TODO Auto-generated catch block
         } catch (IOException e) {
             // TODO Auto-generated catch block
+        }catch(Exception e){
+
         }
         return null;
     }

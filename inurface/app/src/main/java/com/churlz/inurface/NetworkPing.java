@@ -7,6 +7,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -50,14 +51,12 @@ public class NetworkPing extends AsyncTask<String, Void, String> {
                 Data.receivedFrom = from;
                 Log.d("PING", id);
             }
-            JSONArray songs = jsonObject.getJSONArray("suggestions");
-            for(int i = 0; i < songs.length(); i++){
-                JSONObject c = songs.getJSONObject(i);
-                String uri = c.getString("songURI");
-                id = c.getString("id");
-                Log.d("CONFIRM_PLAY", uri);
+            try {
+                JSONObject songs = jsonObject.getJSONObject("song");
+                id = songs.getString("playSuggestionId");
+            }catch(JSONException jse){
+                Log.d("log_tag", "Error in http connection "+jse.toString());
             }
-
             return id;
 
         }catch(Exception e){

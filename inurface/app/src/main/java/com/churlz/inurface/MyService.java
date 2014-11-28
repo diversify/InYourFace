@@ -1,5 +1,7 @@
 package com.churlz.inurface;
 
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -50,13 +52,12 @@ public class MyService extends Service {
         }
     }
 
+
     public void sendBroadcastMessage(String intentFilterName, int arg1, String extraKey) {
         Intent intent = new Intent(intentFilterName);
         if (arg1 != -1 && extraKey != null) {
             intent.putExtra(extraKey, arg1);
         }
-        Log.d("SERVICE_SEND_BROADCAST", extraKey);
-
         sendBroadcast(intent);
     }
 
@@ -67,12 +68,9 @@ public class MyService extends Service {
         {
             try{
                 String result = new NetworkPing().execute("YUP").get();
-                if(result.isEmpty()){
+                if(result.isEmpty() || result.equals("")){
                     ;
-                }else if(result.equals("confirmed")){
-                    
-                }
-                else{
+                }else{
                     sendBroadcastMessage("filter", Integer.parseInt(result), "id");
                 }
             }catch (Exception e ){

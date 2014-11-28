@@ -18,6 +18,7 @@ public class Data {
     public static String trackName;
     public static boolean playing;
     public static int positionInMs;
+    public static String dbId = "0";
 
     public static String userName = "carl";
     public static String sendingTo;
